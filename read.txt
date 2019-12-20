@@ -1,0 +1,3 @@
+packer build -var-file=variables.json ubuntu-apache2.json
+
+packer build ubuntu-apache2.json

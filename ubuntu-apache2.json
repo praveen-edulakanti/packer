@@ -1,0 +1,46 @@
+{
+    "variables": {
+      "aws_access_key": "{{user `aws_access_key`}}",
+      "aws_secret_key": "{{user `aws_secret_key`}}",
+      "instance_type": "t2.medium",
+      "region": "ap-south-1"
+    },
+    "builders": [{
+      "type": "amazon-ebs",
+      "access_key": "{{user `aws_access_key`}}",
+      "secret_key": "{{user `aws_secret_key`}}",
+      "region": "{{user `region`}}",
+      "source_ami": "ami-0123b531fc646552f",
+      "instance_type": "{{user `instance_type`}}",
+      "ssh_username": "ubuntu",
+      "ami_name": "Packer-App-UbuntuMysql {{timestamp}}"
+    }],
+    "provisioners": [
+     {
+              "type": "file",
+              "source": "./users.sql",
+              "destination": "/home/ubuntu/"
+      },
+      {
+              "type": "shell",
+              "inline":[
+                "sudo apt-get update",
+                "sudo apt-get install -y apache2",
+                "sudo apt-get install -y php libapache2-mod-php php-mysql php-curl php-gd php-json php-zip php-mbstring",
+                "sudo a2enmod rewrite",
+                "sudo a2enmod ssl",
+                "sudo systemctl start apache2",
+                "sudo systemctl enable apache2",
+                "sudo git config --global user.name 'praveen-edulakanti'",
+                "sudo git config --global user.email 'praveen.edulakanti@gmail.com'",
+                "sudo mkdir /var/www/html/user",
+                "sudo git clone https://github.com/praveen-edulakanti/user.git /var/www/html/user",
+                "sudo mkdir /var/www/html/dashboard",
+                "sudo git clone https://github.com/praveen-edulakanti/dashboard.git /var/www/html/dashboard",
+                "hostname | sudo tee /var/www/html/index.html",
+                "sudo apt-get install -y mysql-server",
+                "sudo service mysql start"
+              ]
+      }
+    ]
+  }
