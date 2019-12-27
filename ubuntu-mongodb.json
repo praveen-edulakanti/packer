@@ -1,0 +1,25 @@
+{
+    "variables": {
+      "instance_type": "t2.medium",
+      "region": "ap-south-1"
+    },
+    "builders": [{
+      "type": "amazon-ebs",
+      "profile": "default",
+      "region": "{{user `region`}}",
+      "source_ami": "ami-0123b531fc646552f",
+      "instance_type": "{{user `instance_type`}}",
+      "ssh_username": "ubuntu",
+      "ami_name": "Packer_UbuntuMongodb {{timestamp}}"
+    }],
+    "provisioners": [
+      {
+              "type": "shell",
+              "inline":[
+                "sudo apt-get -y update",
+                "sudo apt install -y mongodb",
+                "sudo systemctl start mongodb"
+              ]
+      }
+    ]
+  }
